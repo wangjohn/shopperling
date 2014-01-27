@@ -19,6 +19,7 @@ evaluateData = (casper, productType) ->
       productContainers = document.querySelectorAll(".product.column")
       Array::map.call productContainers, (e) ->
         productType: productType
+        productBrand: "Everlane"
         imageUrl: e.querySelector(".product-image-container img").getAttribute("src").slice(2)
         productUrl: (baseUrl + e.querySelector(".main-product-link").getAttribute("href"))
         productName: $.trim(e.querySelector(".product-name a").innerHTML)
