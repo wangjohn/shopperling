@@ -2,6 +2,9 @@ Products = new Meteor.Collection("products")
 NUM_COLS = 4
 
 if Meteor.isClient
+  Session.setDefault("productType": "tees")
+  Session.setDefault("productsSortOrder": {productPrice: 1})
+
   createRows = (allProducts, numCols) ->
     rows = []
     count = 0
@@ -21,7 +24,8 @@ if Meteor.isClient
     $(e.currentTarget).closest("li").addClass("active")
 
   Template.products.rows = ->
-    allProducts = Products.find({}, {sort: Session.get("productsSortOrder")})
+    allProducts = Products.find({'productType': Session.get("productType")},
+      {sort: Session.get("productsSortOrder")})
     createRows(allProducts, NUM_COLS)
 
   Template.sort_by_dropdown.events
@@ -31,6 +35,14 @@ if Meteor.isClient
     'click .price-highest-first': (e) ->
       changeActiveStatus(e)
       Session.set("productsSortOrder", {productPrice: -1})
+
+  Template.banner_categories.events
+    "click .categories.tees": (e) ->
+      Session.set("productType", "tees")
+    "click .categories.sweaters": (e) ->
+      Session.set("productType", "sweaters")
+    "click .categories.tops": (e) ->
+      Session.set("productType", "tops")
 
 if Meteor.isServer
   Meteor.startup ->
