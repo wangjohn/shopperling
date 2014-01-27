@@ -1,19 +1,23 @@
-casper = require('casper').create()
+casper = require('casper').create(
+  clientScripts: ["../../client/lib/jquery.js"]
+)
 
-EVERLANE_LINK = "https://www.everlane.com/collections/womens-tees"
+EVERLANE_LINK = "http://www.everlane.com/collections/womens-tees"
 
-casper.start EVERLANE_LINK
+data = []
+
+casper.start EVERLANE_LINK, ->
+  @echo "ASDF"
 
 casper.waitForSelector ".products"
 
 casper.then ->
-  imageLinks = @evaluate ->
-    productContainers = document.querySelectorAll(".product-image-container")
-    Array::map.call productContainers, (element) ->
-      imageUrl: element.querySelector("img").getAttribute("src")
-      productName: element.querySelector(".product-name").innerHTML
-      productPrice: element.querySelector(".product-price").innerHTML
+  data = @evaluate ->
+    productContainers = document.querySelectorAll(".product.column")
+    Array::map.call productContainers, (e) -> 
+      imageUrl: e.querySelector(".product-image-container img").getAttribute("src")
+      productName: $.trim(e.querySelector(".product-name a").innerHTML)
+      productPrice: $.trim(e.querySelector(".product-price").innerHTML)
 
-  @echo imageLinks
-
-casper.run
+casper.run ->
+  @echo JSON.stringify(data)
