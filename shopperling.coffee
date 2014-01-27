@@ -25,7 +25,7 @@ if Meteor.isClient
     $(e.currentTarget).closest(minorContainer).addClass("active")
 
   Template.products.rows = ->
-    allProducts = Products.find({'productType': Session.get("productType")},
+    allProducts = Products.find({'productType': Session.get("productType"), 'productPrice': {'$exists': true}},
       {sort: Session.get("productsSortOrder")})
     createRows(allProducts, NUM_COLS)
 

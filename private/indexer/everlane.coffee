@@ -20,7 +20,7 @@ evaluateData = (casper, productType) ->
       Array::map.call productContainers, (e) ->
         productType: productType
         productBrand: "Everlane"
-        imageUrl: e.querySelector(".product-image-container img").getAttribute("src").slice(2)
+        imageUrl: ("http://" + e.querySelector(".product-image-container img").getAttribute("src").slice(2))
         productUrl: (baseUrl + e.querySelector(".main-product-link").getAttribute("href"))
         productName: $.trim(e.querySelector(".product-name a").innerHTML)
         productPrice: parseInt($.trim(e.querySelector(".product-price").innerHTML).slice(1), 10) * 100
