@@ -1,6 +1,10 @@
-<template name="show">
-  <div class="row col-sm-3">
-    <img src="https://everlane-2.imgix.net/i/6fd4c631_7c68.jpg?w=300&h=300&q=65&dpr=1"></img>
-    <div class="price">$15</div>
+<template name="products">
+  <div class="products">
+    {{#each product}}
+      <div class="row col-sm-3">
+        <img src="{{ image_url }}"></img>
+        <div class="price">{{ unit_price }}</div>
+      </div>
+    {{/each}}
   </div>
 </template>
