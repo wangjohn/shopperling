@@ -6,6 +6,7 @@ fs = require('fs')
 EVERLANE_LINKS = [{productType: "tees", url: "http://www.everlane.com/collections/womens-tees"},
                   {productType: "sweaters", url: "http://www.everlane.com/collections/womens-sweaters"},
                   {productType: "tops", url: "http://www.everlane.com/collections/womens-tops"}]
+EVERLANE_BASE_URL = "http://www.everlane.com"
 data = []
 
 writeData = (data) ->
@@ -14,14 +15,15 @@ writeData = (data) ->
 
 evaluateData = (casper, productType) ->
   casper.then ->
-    result = @evaluate (productType) ->
+    result = @evaluate (productType, baseUrl) ->
       productContainers = document.querySelectorAll(".product.column")
       Array::map.call productContainers, (e) ->
         productType: productType
         imageUrl: e.querySelector(".product-image-container img").getAttribute("src").slice(2)
+        productUrl: (baseUrl + e.querySelector(".main-product-link").getAttribute("href"))
         productName: $.trim(e.querySelector(".product-name a").innerHTML)
-        productPrice: $.trim(e.querySelector(".product-price").innerHTML)
-    , productType
+        productPrice: parseInt($.trim(e.querySelector(".product-price").innerHTML).slice(1), 10) * 100
+    , { productType: productType, baseUrl: EVERLANE_BASE_URL }
     data = data.concat(result)
 
 populateData = (casper) ->
