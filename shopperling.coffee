@@ -53,9 +53,14 @@ if Meteor.isClient
       changeActiveStatus(e, "ul.nav.navbar-nav", "li")
 
 if Meteor.isServer
-  Meteor.startup ->
-    fs = Npm.require("fs")
-    result = fs.readFileSync(process.env.PWD + "/private/data/everlane.json")
-    Products.remove({})
+  fs = Npm.require("fs")
+
+  insertResults = (filename) ->
+    result = fs.readFileSync(process.env.PWD + filename)
     for product in JSON.parse(result)
       Products.insert(product)
+
+  Meteor.startup ->
+    Products.remove({})
+    insertResults("/private/data/everlane.json")
+    insertResults("/private/data/neiman_marcus.json")
