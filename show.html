@@ -1,9 +1,14 @@
 <template name="products">
   <div class="products">
-    {{#each product}}
-      <div class="row col-sm-3">
-        <img src="{{ image_url }}"></img>
-        <div class="price">{{ unit_price }}</div>
+    {{#each rows}}
+      <div class="row col-sm-12">
+        {{#each columns}}
+          <div class="col-sm-3">
+            <img src="http://{{ imageUrl }}"></img>
+            <div class="price">{{ productPrice }}</div>
+            <div class="name">{{ productName }}</div>
+          </div>
+        {{/each}}
       </div>
     {{/each}}
   </div>
