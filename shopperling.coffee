@@ -29,6 +29,10 @@ if Meteor.isClient
       {sort: Session.get("productsSortOrder")})
     createRows(allProducts, NUM_COLS)
 
+  Template.products.helpers
+    "displayPrice": (number) ->
+      "$" + (number / 100).toFixed(0).toString()
+
   Template.sort_by_dropdown.events
     'click .price-lowest-first': (e) ->
       Session.set("productsSortOrder", {productPrice: 1})
