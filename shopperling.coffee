@@ -9,12 +9,12 @@ if Meteor.isClient
     count = 0
     column = []
     allProducts.forEach (product) ->
-      count = ((count + 1) % NUM_COLS)
-      if count == 0
+      if count > 0 and count % NUM_COLS == 0
         rows.push({columns: column})
         column = [product]
       else
         column.push(product)
+      count += 1
 
     rows
 
