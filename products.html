@@ -4,7 +4,9 @@
       <div class="row col-sm-12">
         {{#each columns}}
           <div class="col-sm-3 col-xs-6">
-            <img class="img-responsive" src="http://{{ imageUrl }}"></img>
+            <a href="{{ productUrl }}">
+              <img class="img-responsive" src="http://{{ imageUrl }}"></img>
+            </a>
             <div class="price">{{ displayPrice productPrice }}</div>
             <div class="name">{{ productName }}</div>
           </div>
