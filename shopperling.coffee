@@ -16,14 +16,20 @@ if Meteor.isClient
 
     rows
 
+  changeActiveStatus = (e) ->
+    $(e.currentTarget).closest("ul.dropdown-menu").find(".active").removeClass("active")
+    $(e.currentTarget).closest("li").addClass("active")
+
   Template.products.rows = ->
     allProducts = Products.find({}, {sort: Session.get("productsSortOrder")})
     createRows(allProducts, NUM_COLS)
 
   Template.sort_by_dropdown.events
-    'click .price-lowest-first': ->
+    'click .price-lowest-first': (e) ->
+      changeActiveStatus(e)
       Session.set("productsSortOrder", {productPrice: 1})
-    'click .price-highest-first': ->
+    'click .price-highest-first': (e) ->
+      changeActiveStatus(e)
       Session.set("productsSortOrder", {productPrice: -1})
 
 if Meteor.isServer
