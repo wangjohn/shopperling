@@ -1,0 +1,16 @@
+<template name="single_product">
+  <div class="single-product-display">
+    <div class="thumbnail col-sm-12">
+      <img class="product-image img-responsive" src="{{ product.imageUrl }}"></img>
+      <div class="detailed-product-information">
+        <div class="name">{{ product.productName }}</div>
+        <div class="price">{{ displayPrice product.productPrice }}</div>
+      </div>
+      <div class="product-purchase">
+        <button class="btn btn-primary">
+          Purchase
+        </button>
+      </div>
+    </div>
+  </div>
+</template>

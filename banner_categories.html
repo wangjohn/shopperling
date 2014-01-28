@@ -1,5 +1,9 @@
 <template name="banner_categories">
-  <li class="active"><a class="categories tees" href="#">Tees</a></li>
-  <li><a class="categories tops" href="#">Tops</a></li>
-  <li><a class="categories sweaters" href="#">Sweaters</a></li>
+  {{#each categories}}
+    <li class="{{ active }}">
+      <a class="categories {{ productType }}" href="/{{ productType }}">
+        {{ displayName }}
+      </a>
+    </li>
+  {{/each}}
 </template>
