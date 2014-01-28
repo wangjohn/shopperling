@@ -45,14 +45,28 @@ populateData = (casper) ->
     evaluateData(casper, LINKS[linkCounter].productType)
     linkCounter += 1
 
+getExtraInformation = (casper, dataObject) ->
+  casper.thenOpen(dataObject.productUrl)
+  casper.then ->
+    extraInfo = @evaluate ->
+      document.querySelector("#productDetails .cutline.short").innerHTML
+    dataObject.extraInformation = extraInfo
+
 scrape = (casper) ->
   casper.start()
   populateData(casper)
 
   casper.then ->
+    for datum in data
+      getExtraInformation(casper, datum)
+
+  casper.then ->
     jsonData = JSON.stringify(data)
     writeData(jsonData)
     @echo jsonData
+
+  casper.then ->
+    @exit()
 
   casper.run()
 

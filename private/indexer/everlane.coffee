@@ -8,6 +8,7 @@ EVERLANE_LINKS = [{productType: "tees", url: "http://www.everlane.com/collection
                   {productType: "tops", url: "http://www.everlane.com/collections/womens-tops"}]
 EVERLANE_BASE_URL = "http://www.everlane.com"
 data = []
+extraInformation = {}
 
 writeData = (data) ->
   currentFile = require('system').args[3]
@@ -35,14 +36,29 @@ populateData = (casper) ->
     evaluateData(casper, EVERLANE_LINKS[linkCounter].productType)
     linkCounter += 1
 
+getExtraInformation = (casper, dataObject) ->
+  casper.thenOpen(dataObject.productUrl)
+  casper.then ->
+    extraInfo = @evaluate ->
+      document.querySelector(".product-description-footer").innerHTML
+    console.log("BLAH")
+    dataObject.extraInformation = extraInfo
+
 scrape = (casper) ->
   casper.start()
   populateData(casper)
 
   casper.then ->
+    for datum in data
+      getExtraInformation(casper, datum)
+
+  casper.then ->
     jsonData = JSON.stringify(data)
     writeData(jsonData)
     @echo jsonData
+
+  casper.then ->
+    @exit()
 
   casper.run()
 
