@@ -4,6 +4,7 @@ NUM_COLS = 4
 if Meteor.isClient
   Session.setDefault("productType", "tees")
   Session.setDefault("productsSortOrder", {productPrice: 1})
+  Session.setDefault("productBrands", ["Everlane", "Neiman Marcus"])
   Session.set("productCategories", [
     {"active": "active", "productType": "tees", "displayName": "Tees"},
     {"active": "", "productType": "tops", "displayName": "Tops"},
@@ -57,8 +58,15 @@ if Meteor.isClient
     Session.get("currentProduct")
 
   Template.products.rows = ->
-    allProducts = Products.find({'productType': Session.get("productType"), 'productPrice': {'$exists': true}},
-      {sort: Session.get("productsSortOrder")})
+    findGroup =
+      productType: Session.get("productType")
+      productPrice: {"$exists": true}
+      productBrand: {"$in": Session.get("productBrands")}
+
+    sort =
+      sort: Session.get("productsSortOrder")
+
+    allProducts = Products.find(findGroup, sort)
     createRows(allProducts, NUM_COLS)
 
   Template.products.helpers
@@ -80,6 +88,13 @@ if Meteor.isClient
   Template.filter_dropdown.events
     "click .filter-dropdown": (e) ->
       e.stopPropagation()
+    "click input": (e) ->
+      brands = []
+      $("input.brand-checkbox").each (index, element) ->
+        if $(element).prop("checked")
+          brands.push($(element).attr("name"))
+
+      Session.set("productBrands", brands)
 
   Template.banner_categories.events
     "click .categories.tees": (e) ->
