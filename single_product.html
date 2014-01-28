@@ -1,15 +1,23 @@
 <template name="single_product">
   <div class="single-product-display">
     <div class="thumbnail col-sm-12">
-      <img class="product-image img-responsive" src="{{ product.imageUrl }}"></img>
-      <div class="detailed-product-information">
-        <div class="name">{{ product.productName }}</div>
-        <div class="price">{{ displayPrice product.productPrice }}</div>
+      <div class="main-information col-sm-6">
+        <img class="product-image img-responsive" src="{{ product.imageUrl }}"></img>
+        <div class="detailed-product-information caption">
+          <div class="name">{{ product.productName }}</div>
+          <div class="price">{{ displayPrice product.productPrice 2 }}</div>
+          <div class="brand"><strong>{{ product.productBrand }}</strong></div>
+          <div class="product-purchase">
+            <a class="purchase btn btn-lg btn-block btn-primary" href="{{ product.productUrl }}">
+              Purchase
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="product-purchase">
-        <button class="btn btn-primary">
-          Purchase
-        </button>
+      <div class="secondary-information col-sm-6">
+        <div class="extra-product-information">
+          {{{ product.extraInformation }}}
+        </div>
       </div>
     </div>
   </div>

@@ -65,6 +65,10 @@ if Meteor.isClient
     "displayPrice": (number) ->
       "$" + (number / 100).toFixed(0).toString()
 
+  Template.single_product.helpers
+    "displayPrice": (number) ->
+      "$" + (number / 100).toFixed(2).toString()
+
   Template.sort_by_dropdown.events
     'click .price-lowest-first': (e) ->
       Session.set("productsSortOrder", {productPrice: 1})
