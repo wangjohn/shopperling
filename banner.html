@@ -1,6 +1,6 @@
 <template name="banner">
   <div class="header">
-    <h1 class="page-header">Shopperling</h1>
+    <h1 class="page-header">Giuseppe Moretti</h1>
     <nav class="navbar navbar-default" role="navigation">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#shopperling-navbar">
@@ -18,14 +18,7 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           {{> sort_by_dropdown }}
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Price</a></li>
-              <li><a href="#">Search</a></li>
-              <li><a href="#">Something</a></li>
-            </ul>
-          </li>
+          {{> filter_dropdown }}
         </ul>
       </div>
     </nav>

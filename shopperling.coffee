@@ -77,6 +77,10 @@ if Meteor.isClient
       Session.set("productsSortOrder", {productPrice: -1})
       changeActiveStatus(e, "ul.dropdown-menu", "li")
 
+  Template.filter_dropdown.events
+    "click .filter-dropdown": (e) ->
+      e.stopPropagation()
+
   Template.banner_categories.events
     "click .categories.tees": (e) ->
       Session.set("productType", "tees")
