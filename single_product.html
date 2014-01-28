@@ -1,7 +1,7 @@
 <template name="single_product">
   <div class="single-product-display">
-    <div class="thumbnail col-sm-12">
-      <div class="main-information col-sm-6">
+    <div class="thumbnail col-sm-12 col-xs-12">
+      <div class="main-information col-sm-6 col-xs-12">
         <img class="product-image img-responsive" src="{{ product.imageUrl }}"></img>
         <div class="detailed-product-information caption">
           <div class="name">{{ product.productName }}</div>
@@ -14,7 +14,8 @@
           </div>
         </div>
       </div>
-      <div class="secondary-information col-sm-6">
+      <div class="clearfix information-description-buffer visible-xs"></div>
+      <div class="secondary-information col-sm-6 col-xs-12">
         <div class="extra-product-information">
           {{{ product.extraInformation }}}
         </div>
