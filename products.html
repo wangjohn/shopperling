@@ -1,17 +1,21 @@
 <template name="products">
   <div class="products">
     {{#each rows}}
-      <div class="row col-sm-12">
-        {{#each columns}}
-          <div class="col-sm-3 col-xs-6">
-            <a href="{{ productUrl }}" class="thumbnail">
-              <img class="product-image img-responsive"
-                src="{{ imageUrl}}"></img>
-            </a>
-            <div class="price">{{ displayPrice productPrice }}</div>
-            <div class="name">{{ productName }}</div>
-          </div>
-        {{/each}}
+      <div class="row">
+        <div class="col-sm-12">
+          {{#each columns}}
+            <div class="col-sm-3 col-xs-6 thumbnail">
+              <a href="{{ productUrl }}">
+                <img class="product-image img-responsive" src="{{ imageUrl}}">
+                </img>
+              </a>
+              <div class="product-information caption">
+                <div class="name">{{ productName }}</div>
+                <div class="price">{{ displayPrice productPrice }}</div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
       </div>
     {{/each}}
   </div>
