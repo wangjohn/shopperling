@@ -1,10 +1,18 @@
-Products = new Meteor.Collection("products")
+@Products = new Meteor.Collection("products")
 NUM_COLS = 4
 
 if Meteor.isClient
   Meteor.startup ->
     Session.setDefault("productType", "tees")
     Session.setDefault("productsSortOrder", {productPrice: 1})
+
+  Meteor.Router.add
+    "/products/:id": (id) ->
+      currentProduct = Products.findOne({"_id": id})
+      Session.set("currentProduct", currentProduct)
+      "single_product"
+    "*": ->
+      "products"
 
   createRows = (allProducts, numCols) ->
     rows = []
@@ -23,6 +31,9 @@ if Meteor.isClient
   changeActiveStatus = (e, majorContainer, minorContainer) ->
     $(e.currentTarget).closest(majorContainer).find(".active").removeClass("active")
     $(e.currentTarget).closest(minorContainer).addClass("active")
+
+  Template.single_product.product = ->
+    Session.get("currentProduct")
 
   Template.products.rows = ->
     allProducts = Products.find({'productType': Session.get("productType"), 'productPrice': {'$exists': true}},
