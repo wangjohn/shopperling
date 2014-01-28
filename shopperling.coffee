@@ -4,7 +4,7 @@ NUM_COLS = 4
 if Meteor.isClient
   Session.setDefault("productType", "tees")
   Session.setDefault("productsSortOrder", {productPrice: 1})
-  Session.setDefault("productBrands", ["Everlane", "Neiman Marcus", "Express"])
+  Session.setDefault("productBrands", ["Calvin Klein", "Everlane", "Neiman Marcus", "Express"])
   Session.set("productCategories", [
     {"active": "active", "productType": "tees", "displayName": "Tees"},
     {"active": "", "productType": "tops", "displayName": "Tops"},
@@ -113,6 +113,7 @@ if Meteor.isServer
 
   Meteor.startup ->
     Products.remove({})
+    insertResults("data/calvin_klein.json")
     insertResults("data/everlane.json")
     insertResults("data/express.json")
     insertResults("data/neiman_marcus.json")
