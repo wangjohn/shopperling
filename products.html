@@ -6,7 +6,7 @@
           {{#each columns}}
             <div class="col-sm-3 col-xs-6 product">
               <div class="thumbnail">
-                <a href="/products/{{ _id }}">
+                <a href="/products/{{ _id }}" class="product-link" data-target="{{ _id }}">
                   <img class="product-image img-responsive" src="/images/{{ storageImageFilename }}"></img>
                 </a>
                 <div class="product-information caption">

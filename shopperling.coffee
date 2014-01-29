@@ -86,6 +86,11 @@ if Meteor.isClient
           Session.set("queryLimit", Session.get("queryLimit") + 20)
     , 200
 
+  Template.products.events
+    "click .product-link": (e) ->
+      productId = $(e.currentTarget).attr("data-target")
+      Products.update({"_id": productId}, {$inc: {numClicks: 1}})
+
   Template.products.helpers
     "displayPrice": (number) ->
       "$" + (number / 100).toFixed(0).toString()
@@ -127,10 +132,11 @@ if Meteor.isServer
   insertResults = (filename) ->
     result = Assets.getText(filename)
     for product in JSON.parse(result)
+      product.numClicks = 0
       Products.insert(product)
 
   Meteor.startup ->
-    #Products.remove({})
-    #insertResults("data/all_products.json")
+    Products.remove({})
+    insertResults("data/all_products.json")
 
 

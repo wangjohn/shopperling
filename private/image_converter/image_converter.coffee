@@ -7,7 +7,8 @@ async = require("async")
 
 dataDirectory = path.resolve(path.join(__dirname, "../data/"))
 imageDirectory = path.resolve(path.join(__dirname, "../../public/images"))
-dataFiles = fs.readdirSync(dataDirectory)
+#dataFiles = fs.readdirSync(dataDirectory)
+dataFiles = ["banana_republic.json", "hm.json"]
 
 generatePngNameStub = ->
   crypto.randomBytes(4).readUInt32LE(0) + ".png"
@@ -35,10 +36,10 @@ resizeImage = (tempFilename, finalFilename, cb) ->
       stdout.pipe(writeStream)
       stdout.on("end", cb)
 
-readFiles = (dataDirectory, dataFiles) ->
+readFiles = (dataDirectory, files) ->
   allProducts = []
   newProducts = []
-  for dataFile in dataFiles
+  for dataFile in files
     unless dataFile == "all_products.json"
       filename = path.resolve(path.join(dataDirectory, dataFile))
       data = fs.readFileSync(filename)
@@ -62,7 +63,9 @@ convertProduct = (products, newProducts) ->
   else
     productsToWrite = JSON.stringify(newProducts)
     filename = path.join(dataDirectory, "all_products.json")
+    previousProducts = JSON.parse(fs.readFileSync(filename))
+    allProducts = previousProducts.concat(productsToWrite)
     console.log("WRITING TO: " + filename)
-    fs.writeFileSync(filename, productsToWrite)
+    fs.writeFileSync(filename, allProducts)
 
 readFiles(dataDirectory, dataFiles)
