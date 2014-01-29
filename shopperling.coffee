@@ -2,15 +2,15 @@
 NUM_COLS = 4
 
 if Meteor.isClient
-  Meteor.startup ->
-    Session.setDefault("productType", "tees")
-    Session.setDefault("productsSortOrder", {productPrice: 1})
-    Session.setDefault("productBrands", ["Calvin Klein", "Everlane", "Neiman Marcus", "Express"])
-    Session.set("productCategories", [
-      {"active": "active", "productType": "tees", "displayName": "Tees"},
-      {"active": "", "productType": "tops", "displayName": "Tops"},
-      {"active": "", "productType": "sweaters", "displayName": "Sweaters"}
-    ])
+  Session.setDefault("productType", "tees")
+  Session.setDefault("productsSortOrder", {productPrice: 1})
+  Session.setDefault("productBrands", ["Calvin Klein", "Everlane", "Neiman Marcus", "Express"])
+  Session.setDefault("queryLimit", 20)
+  Session.setDefault("productCategories", [
+    {"active": "active", "productType": "tees", "displayName": "Tees"},
+    {"active": "", "productType": "tops", "displayName": "Tops"},
+    {"active": "", "productType": "sweaters", "displayName": "Sweaters"}
+  ])
 
   Meteor.Router.add
     "/products/:id": (id) ->
@@ -43,6 +43,7 @@ if Meteor.isClient
 
   Deps.autorun ->
     productType = Session.get("productType")
+    Session.set("queryLimit", 20)
     newCategories = _.map Session.get("productCategories"), (category) ->
       if category.productType == productType
         category.active = "active"
@@ -64,15 +65,32 @@ if Meteor.isClient
       productPrice: {"$exists": true}
       productBrand: {"$in": Session.get("productBrands")}
 
-    sort =
+    secondaryGroup =
       sort: Session.get("productsSortOrder")
+      limit: Session.get("queryLimit")
 
-    allProducts = Products.find(findGroup, sort)
+    allProducts = Products.find(findGroup, secondaryGroup)
     createRows(allProducts, NUM_COLS)
+
+  Template.products.created = ->
+    didScroll = false
+    $win = $(window)
+
+    $win.scroll ->
+      didScroll = true
+
+    setInterval ->
+      if didScroll
+        didScroll = false
+        if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-500))
+          Session.set("queryLimit", Session.get("queryLimit") + 20)
+    , 200
 
   Template.products.helpers
     "displayPrice": (number) ->
       "$" + (number / 100).toFixed(0).toString()
+    "lowerCase": (string) ->
+      string.toLowerCase()
 
   Template.single_product.helpers
     "displayPrice": (number) ->
@@ -112,7 +130,7 @@ if Meteor.isServer
       Products.insert(product)
 
   Meteor.startup ->
-    Products.remove({})
-    insertResults("data/all_products.json")
+    #Products.remove({})
+    #insertResults("data/all_products.json")
 
 
