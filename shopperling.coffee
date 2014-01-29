@@ -7,9 +7,9 @@ if Meteor.isClient
   Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
   Session.setDefault("queryLimit", 20)
   Session.setDefault("productCategories", [
-    {"active": "active", "productType": "tees", "displayName": "Tees"},
-    {"active": "", "productType": "tops", "displayName": "Tops"},
+    {"active": "active", "productType": "tops", "displayName": "Tops"},
     {"active": "", "productType": "sweaters", "displayName": "Sweaters"}
+    {"active": "", "productType": "tees", "displayName": "Tees"},
   ])
 
   Meteor.Router.add
