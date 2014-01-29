@@ -1,15 +1,17 @@
-@Products = new Meteor.Collection("products")
+Products = new Meteor.Collection("products")
+Aggregates = new Meteor.Collection("aggregates")
 NUM_COLS = 4
 
 if Meteor.isClient
   Session.setDefault("productType", "tees")
   Session.setDefault("productsSortOrder", {numClicks: -1})
   Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
+  Session.setDefault("productPriceRanges", [1,2,3,4])
   Session.setDefault("queryLimit", 20)
   Session.setDefault("productCategories", [
     {"active": "active", "productType": "tops", "displayName": "Tops"},
-    {"active": "", "productType": "sweaters", "displayName": "Sweaters"}
-    {"active": "", "productType": "tees", "displayName": "Tees"},
+    {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
+    {"active": "", "productType": "tees", "displayName": "Tees"}
   ])
 
   Meteor.Router.add
@@ -60,17 +62,31 @@ if Meteor.isClient
     Session.get("currentProduct")
 
   Template.products.rows = ->
-    findGroup =
-      productType: Session.get("productType")
-      productPrice: {"$exists": true}
-      productBrand: {"$in": Session.get("productBrands")}
+    ptype = Session.get("productType")
+    aggregates = Aggregates.findOne({"productType": ptype})
 
-    secondaryGroup =
-      sort: Session.get("productsSortOrder")
-      limit: Session.get("queryLimit")
+    priceRangeQuery = _.map Session.get("productPriceRanges"), (range) ->
+      lower = if range > 1 then aggregates[range-1] else 0
+      query = {"$gte": lower}
+      if range < 4
+        query["$lt"] = aggregates[range]
+      { productPrice: query }
 
-    allProducts = Products.find(findGroup, secondaryGroup)
-    createRows(allProducts, NUM_COLS)
+    if priceRangeQuery.length > 0
+      findGroup =
+        productType: ptype
+        productPrice: {"$exists": true}
+        productBrand: {"$in": Session.get("productBrands")}
+        $or: priceRangeQuery
+
+      secondaryGroup =
+        sort: Session.get("productsSortOrder")
+        limit: Session.get("queryLimit")
+
+      allProducts = Products.find(findGroup, secondaryGroup)
+      createRows(allProducts, NUM_COLS)
+    else
+      []
 
   Template.products.created = ->
     didScroll = false
@@ -115,13 +131,19 @@ if Meteor.isClient
   Template.filter_dropdown.events
     "click .filter-dropdown": (e) ->
       e.stopPropagation()
-    "click input": (e) ->
+    "click input.brand-checkbox": (e) ->
       brands = []
       $("input.brand-checkbox").each (index, element) ->
         if $(element).prop("checked")
           brands.push($(element).attr("name"))
-
       Session.set("productBrands", brands)
+    "click input.price-checkbox": (e) ->
+      ranges = []
+      $("input.price-checkbox").each (index, element) ->
+        if $(element).prop("checked")
+          range = parseInt($(element).attr("range"), 10)
+          ranges.push(range)
+      Session.set("productPriceRanges", ranges)
 
   Template.banner_categories.events
     "click .categories.tees": (e) ->
@@ -138,8 +160,29 @@ if Meteor.isServer
       product.numClicks = 0
       Products.insert(product)
 
+  computeAggregates = ->
+    groupedProducts = {}
+    Aggregates.remove({})
+    Products.find({}, {sort: {productType: 1, producePrice: 1}}).forEach (product) ->
+      groupedProducts[product.productType] ?= []
+      groupedProducts[product.productType].push(product.productPrice)
+
+    _.each _.keys(groupedProducts), (key) ->
+      currentGroup = groupedProducts[key]
+      currentGroup = _.sortBy(currentGroup, (num) -> num)
+      count = currentGroup.length
+
+      aggregates =
+        productType: key
+        1: currentGroup[Math.floor(0.25*count)]
+        2: currentGroup[Math.floor(0.5*count)]
+        3: currentGroup[Math.floor(0.75*count)]
+      console.log(aggregates)
+      Aggregates.insert(aggregates)
+
   Meteor.startup ->
-    Products.remove({})
-    insertResults("data/all_products.json")
+    #Products.remove({})
+    #insertResults("data/all_products.json")
+    #computeAggregates()
 
 
