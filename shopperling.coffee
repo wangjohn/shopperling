@@ -4,7 +4,7 @@ NUM_COLS = 4
 if Meteor.isClient
   Session.setDefault("productType", "tees")
   Session.setDefault("productsSortOrder", {numClicks: -1})
-  Session.setDefault("productBrands", ["Calvin Klein", "Everlane", "Neiman Marcus", "Express"])
+  Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
   Session.setDefault("queryLimit", 20)
   Session.setDefault("productCategories", [
     {"active": "active", "productType": "tees", "displayName": "Tees"},
