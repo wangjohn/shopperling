@@ -67,21 +67,21 @@ if Meteor.isClient
   Template.products.rows = ->
     ptype = Session.get("productType")
     aggregates = Session.get("aggregates")[ptype]
+    ranges = Session.get("productPriceRanges")
 
-    priceRangeQuery = _.map Session.get("productPriceRanges"), (range) ->
-      lower = if range > 1 then aggregates[range-1] else 0
-      query = {"$gte": lower}
-      if range < 4
-        query["$lt"] = aggregates[range]
-      { productPrice: query }
+    findGroup =
+      productType: ptype
+      productPrice: {"$exists": true}
+      productBrand: {"$in": Session.get("productBrands")}
 
-    if priceRangeQuery.length > 0
-      findGroup =
-        productType: ptype
-        productPrice: {"$exists": true}
-        productBrand: {"$in": Session.get("productBrands")}
-
-      if priceRangeQuery.length < 4
+    if ranges.length > 0
+      if ranges.length < 4
+        priceRangeQuery = _.map ranges, (range) ->
+          lower = if range > 1 then aggregates[range-1] else 0
+          query = {"$gte": lower}
+          if range < 4
+            query["$lt"] = aggregates[range]
+          { productPrice: query }
         findGroup["$or"] = priceRangeQuery
 
       secondaryGroup =
