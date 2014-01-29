@@ -80,7 +80,9 @@ if Meteor.isClient
         productType: ptype
         productPrice: {"$exists": true}
         productBrand: {"$in": Session.get("productBrands")}
-        $or: priceRangeQuery
+
+      if priceRangeQuery.length < 4
+        findGroup["$or"] = priceRangeQuery
 
       secondaryGroup =
         sort: Session.get("productsSortOrder")
