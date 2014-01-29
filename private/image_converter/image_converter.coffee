@@ -8,7 +8,6 @@ async = require("async")
 dataDirectory = path.resolve(path.join(__dirname, "../data/"))
 imageDirectory = path.resolve(path.join(__dirname, "../../public/images"))
 dataFiles = fs.readdirSync(dataDirectory)
-convertedImages = 0
 
 generateFilename = ->
   path.join(imageDirectory, crypto.randomBytes(4).readUInt32LE(0) + ".png")
@@ -45,13 +44,14 @@ readFiles = (dataDirectory, dataFiles) ->
   convertProduct(allProducts, newProducts)
 
 convertProduct = (products, newProducts) ->
+  console.log(products.length)
   if products.length > 0
     product = products.pop()
     tempFilename = generateTempFilename()
     finalFilename = generateFilename()
     download(product.imageUrl, tempFilename, finalFilename, ->
       product.storageImageFilename = finalFilename
-      newProducts.append(product)
+      newProducts.push(product)
       convertProduct(products, newProducts)
     )
   else
