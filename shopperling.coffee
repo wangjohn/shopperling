@@ -1,4 +1,5 @@
 Products = new Meteor.Collection("products")
+Payments = new Meteor.Collection("payments")
 NUM_COLS = 4
 
 if Meteor.isClient
@@ -125,7 +126,6 @@ if Meteor.isClient
         shippingAddress: true
         billingAddress: true
         token: (res) ->
-          console.log(res)
           Payments.insert(res)
 
   Template.products.events
