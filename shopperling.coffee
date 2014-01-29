@@ -106,7 +106,6 @@ if Meteor.isClient
       Session.set("productType", "tops")
 
 if Meteor.isServer
-
   insertResults = (filename) ->
     result = Assets.getText(filename)
     for product in JSON.parse(result)
@@ -114,9 +113,6 @@ if Meteor.isServer
 
   Meteor.startup ->
     Products.remove({})
-    insertResults("data/calvin_klein.json")
-    insertResults("data/everlane.json")
-    insertResults("data/express.json")
-    insertResults("data/neiman_marcus.json")
+    insertResults("data/all_products.json")
 
 

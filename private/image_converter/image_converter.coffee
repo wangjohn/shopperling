@@ -9,8 +9,11 @@ dataDirectory = path.resolve(path.join(__dirname, "../data/"))
 imageDirectory = path.resolve(path.join(__dirname, "../../public/images"))
 dataFiles = fs.readdirSync(dataDirectory)
 
-generateFilename = ->
-  path.join(imageDirectory, crypto.randomBytes(4).readUInt32LE(0) + ".png")
+generatePngNameStub = ->
+  crypto.randomBytes(4).readUInt32LE(0) + ".png"
+
+generateFilename = (nameStub) ->
+  path.join(imageDirectory, nameStub)
 
 generateTempFilename = ->
   path.join(path.resolve("/tmp"), crypto.randomBytes(4).readUInt32LE(0) + ".png")
@@ -36,10 +39,11 @@ readFiles = (dataDirectory, dataFiles) ->
   allProducts = []
   newProducts = []
   for dataFile in dataFiles
-    filename = path.resolve(path.join(dataDirectory, dataFile))
-    data = fs.readFileSync(filename)
-    products = JSON.parse(data)
-    allProducts = allProducts.concat(products)
+    unless dataFile == "all_products.json"
+      filename = path.resolve(path.join(dataDirectory, dataFile))
+      data = fs.readFileSync(filename)
+      products = JSON.parse(data)
+      allProducts = allProducts.concat(products)
 
   convertProduct(allProducts, newProducts)
 
@@ -48,9 +52,10 @@ convertProduct = (products, newProducts) ->
   if products.length > 0
     product = products.pop()
     tempFilename = generateTempFilename()
-    finalFilename = generateFilename()
+    nameStub = generatePngNameStub()
+    finalFilename = generateFilename(nameStub)
     download(product.imageUrl, tempFilename, finalFilename, ->
-      product.storageImageFilename = finalFilename
+      product["storageImageFilename"] = nameStub
       newProducts.push(product)
       convertProduct(products, newProducts)
     )
