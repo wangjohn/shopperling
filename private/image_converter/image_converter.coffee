@@ -8,6 +8,7 @@ async = require("async")
 dataDirectory = path.resolve(path.join(__dirname, "../data/"))
 imageDirectory = path.resolve(path.join(__dirname, "../../public/images"))
 dataFiles = fs.readdirSync(dataDirectory)
+convertedImages = 0
 
 generateFilename = ->
   path.join(imageDirectory, crypto.randomBytes(4).readUInt32LE(0) + ".png")
@@ -15,14 +16,14 @@ generateFilename = ->
 generateTempFilename = ->
   path.join(path.resolve("/tmp"), crypto.randomBytes(4).readUInt32LE(0) + ".png")
 
-download = (path, tempFilename, finalFilename) ->
+download = (path, tempFilename, finalFilename, cb) ->
   writeStream = fs.createWriteStream(tempFilename)
   http.get path, (res) ->
     res.pipe(writeStream)
     res.on "end", ->
-      resizeImage(tempFilename, finalFilename)
+      resizeImage(tempFilename, finalFilename, cb)
 
-resizeImage = (tempFilename, finalFilename) ->
+resizeImage = (tempFilename, finalFilename, cb) ->
   gm(tempFilename)
     .resize(300, 300)
     .gravity("Center")
@@ -30,25 +31,33 @@ resizeImage = (tempFilename, finalFilename) ->
     .stream "png", (err, stdout, stderr) ->
       writeStream = fs.createWriteStream(finalFilename)
       stdout.pipe(writeStream)
+      stdout.on("end", cb)
 
 readFiles = (dataDirectory, dataFiles) ->
+  allProducts = []
+  newProducts = []
   for dataFile in dataFiles
     filename = path.resolve(path.join(dataDirectory, dataFile))
     data = fs.readFileSync(filename)
     products = JSON.parse(data)
-    console.log(products.length)
-    for product in products
-      convertProduct(product)
+    allProducts = allProducts.concat(products)
 
-    newProducts = JSON.stringify(products)
-    fs.writeFileSync(filename, newProducts)
-    console.log("WROTE: " + filename)
+  convertProduct(allProducts, newProducts)
 
-convertProduct = (product) ->
-  tempFilename = generateTempFilename()
-  finalFilename = generateFilename()
-  download(product.imageUrl, tempFilename, finalFilename)
-  product.storageImageFilename = finalFilename
-  product
+convertProduct = (products, newProducts) ->
+  if products.length > 0
+    product = products.pop()
+    tempFilename = generateTempFilename()
+    finalFilename = generateFilename()
+    download(product.imageUrl, tempFilename, finalFilename, ->
+      product.storageImageFilename = finalFilename
+      newProducts.append(product)
+      convertProduct(products, newProducts)
+    )
+  else
+    productsToWrite = JSON.stringify(newProducts)
+    filename = path.join(dataDirectory, "all_products.json")
+    console.log("WRITING TO: " + filename)
+    fs.writeFileSync(filename, productsToWrite)
 
 readFiles(dataDirectory, dataFiles)
