@@ -1,5 +1,4 @@
 Products = new Meteor.Collection("products")
-Aggregates = new Meteor.Collection("aggregates")
 NUM_COLS = 4
 
 if Meteor.isClient
@@ -13,6 +12,10 @@ if Meteor.isClient
     {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
     {"active": "", "productType": "tees", "displayName": "Tees"}
   ])
+  Session.setDefault "aggregates",
+    sweaters: { '1': 3400, '2': 5900, '3': 7900 }
+    tees: { '1': 1500, '2': 1500, '3': 2000 }
+    tops: { '1': 2400, '2': 3900, '3': 5000 }
 
   Meteor.Router.add
     "/products/:id": (id) ->
@@ -63,7 +66,7 @@ if Meteor.isClient
 
   Template.products.rows = ->
     ptype = Session.get("productType")
-    aggregates = Aggregates.findOne({"productType": ptype})
+    aggregates = Session.get("aggregates")[ptype]
 
     priceRangeQuery = _.map Session.get("productPriceRanges"), (range) ->
       lower = if range > 1 then aggregates[range-1] else 0
@@ -160,29 +163,8 @@ if Meteor.isServer
       product.numClicks = 0
       Products.insert(product)
 
-  computeAggregates = ->
-    groupedProducts = {}
-    Aggregates.remove({})
-    Products.find({}, {sort: {productType: 1, producePrice: 1}}).forEach (product) ->
-      groupedProducts[product.productType] ?= []
-      groupedProducts[product.productType].push(product.productPrice)
-
-    _.each _.keys(groupedProducts), (key) ->
-      currentGroup = groupedProducts[key]
-      currentGroup = _.sortBy(currentGroup, (num) -> num)
-      count = currentGroup.length
-
-      aggregates =
-        productType: key
-        1: currentGroup[Math.floor(0.25*count)]
-        2: currentGroup[Math.floor(0.5*count)]
-        3: currentGroup[Math.floor(0.75*count)]
-      console.log(aggregates)
-      Aggregates.insert(aggregates)
-
   Meteor.startup ->
     Products.remove({})
     insertResults("data/all_products.json")
-    computeAggregates()
 
 
