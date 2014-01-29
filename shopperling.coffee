@@ -3,7 +3,7 @@ Aggregates = new Meteor.Collection("aggregates")
 NUM_COLS = 4
 
 if Meteor.isClient
-  Session.setDefault("productType", "tees")
+  Session.setDefault("productType", "tops")
   Session.setDefault("productsSortOrder", {numClicks: -1})
   Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
   Session.setDefault("productPriceRanges", [1,2,3,4])
