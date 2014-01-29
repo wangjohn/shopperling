@@ -109,7 +109,7 @@ if Meteor.isClient
     , 200
 
   Template.purchase_button.events
-    'click .purchase': (e) ->
+    "click .purchase": (e) ->
       e.preventDefault()
       target = $(e.currentTarget)
 
@@ -127,6 +127,8 @@ if Meteor.isClient
         billingAddress: true
         token: (res) ->
           Payments.insert(res)
+        closed: ->
+          window.location.href = "/"
 
   Template.products.events
     "click .product-link": (e) ->
