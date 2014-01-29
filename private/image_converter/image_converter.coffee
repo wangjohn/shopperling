@@ -61,11 +61,14 @@ convertProduct = (products, newProducts) ->
       convertProduct(products, newProducts)
     )
   else
-    productsToWrite = JSON.stringify(newProducts)
     filename = path.join(dataDirectory, "all_products.json")
     previousProducts = JSON.parse(fs.readFileSync(filename))
-    allProducts = previousProducts.concat(productsToWrite)
+    allProducts = previousProducts.concat(newProducts)
+    productsToWrite = JSON.stringify(allProducts)
+    console.log(previousProducts.length)
+    console.log(newProducts.length)
+    console.log(allProducts.length)
     console.log("WRITING TO: " + filename)
-    fs.writeFileSync(filename, allProducts)
+    fs.writeFileSync(filename, productsToWrite)
 
 readFiles(dataDirectory, dataFiles)

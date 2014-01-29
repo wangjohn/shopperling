@@ -3,7 +3,7 @@ NUM_COLS = 4
 
 if Meteor.isClient
   Session.setDefault("productType", "tees")
-  Session.setDefault("productsSortOrder", {productPrice: 1})
+  Session.setDefault("productsSortOrder", {numClicks: -1})
   Session.setDefault("productBrands", ["Calvin Klein", "Everlane", "Neiman Marcus", "Express"])
   Session.setDefault("queryLimit", 20)
   Session.setDefault("productCategories", [
@@ -102,10 +102,13 @@ if Meteor.isClient
       "$" + (number / 100).toFixed(2).toString()
 
   Template.sort_by_dropdown.events
-    'click .price-lowest-first': (e) ->
+    "click .most-popular": (e) ->
+      Session.set("productsSortOrder", {numClicks: -1})
+      changeActiveStatus(e, "ul.dropdown-menu", "li")
+    "click .price-lowest-first": (e) ->
       Session.set("productsSortOrder", {productPrice: 1})
       changeActiveStatus(e, "ul.dropdown-menu", "li")
-    'click .price-highest-first': (e) ->
+    "click .price-highest-first": (e) ->
       Session.set("productsSortOrder", {productPrice: -1})
       changeActiveStatus(e, "ul.dropdown-menu", "li")
 

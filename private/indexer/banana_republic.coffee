@@ -31,10 +31,11 @@ evaluateData = (casper, productType) ->
         currentResult =
           productType: productType
           productBrand: "Banana Republic"
-          imageUrl: (e.querySelector("img.gridProdImg").getAttribute("src"))
+          imageUrl: (e.querySelector("img.gridProdImg").getAttribute("productimagepath"))
           productUrl: (baseUrl + (e.querySelector("a.productItemName").getAttribute("href")))
           productName: $.trim(e.querySelector("a.productItemName").innerHTML)
           productPrice: price
+        console.log(currentResult.imageUrl)
         collection.push(currentResult)
       collection
     , { productType: productType, baseUrl: BASE_URL }
