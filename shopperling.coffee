@@ -107,6 +107,27 @@ if Meteor.isClient
           Session.set("queryLimit", Session.get("queryLimit") + 20)
     , 200
 
+  Template.purchase_button.events
+    'click .purchase': (e) ->
+      e.preventDefault()
+      target = $(e.currentTarget)
+
+      productName = target.attr("data-product-name")
+      price = target.attr("data-product-price")
+      description = target.attr("data-product-description")
+      image = target.attr("data-product-image")
+      StripeCheckout.open
+        key: "pk_test_Yn2GuE76kN6CdrkIYGfFSunq"
+        amount: price
+        name: productName
+        image: image
+        description: description
+        shippingAddress: true
+        billingAddress: true
+        token: (res) ->
+          console.log(res)
+          Payments.insert(res)
+
   Template.products.events
     "click .product-link": (e) ->
       productId = $(e.currentTarget).attr("data-target")

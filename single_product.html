@@ -8,9 +8,7 @@
           <div class="price">{{ displayPrice product.productPrice 2 }}</div>
           <div class="brand"><strong>{{ product.productBrand }}</strong></div>
           <div class="product-purchase">
-            <a class="purchase btn btn-lg btn-block btn-primary" href="{{ product.productUrl }}" target="_blank">
-              Purchase
-            </a>
+            {{> purchase_button product }}
           </div>
         </div>
       </div>
@@ -22,4 +20,15 @@
       </div>
     </div>
   </div>
+</template>
+
+<template name="purchase_button">
+  <a class="purchase btn btn-lg btn-block btn-primary" 
+      href="{{ product.productUrl }}" target="_blank"
+      data-product-name="{{ productName}}"
+      data-product-price="{{ productPrice }}"
+      data-product-image="/images/{{ storageImageFilename }}"
+      data-product-description="{{ productBrand }}">
+    Purchase
+  </a>
 </template>
