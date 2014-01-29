@@ -181,8 +181,8 @@ if Meteor.isServer
       Aggregates.insert(aggregates)
 
   Meteor.startup ->
-    #Products.remove({})
-    #insertResults("data/all_products.json")
-    #computeAggregates()
+    Products.remove({})
+    insertResults("data/all_products.json")
+    computeAggregates()
 
 
