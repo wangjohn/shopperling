@@ -1,6 +1,10 @@
 Products = new Meteor.Collection("products")
 Payments = new Meteor.Collection("payments")
 NUM_COLS = 4
+AGGREGATES =
+  sweaters: { '1': 3400, '2': 5900, '3': 7900 }
+  tees: { '1': 1500, '2': 1500, '3': 2000 }
+  tops: { '1': 2400, '2': 3900, '3': 5000 }
 
 if Meteor.isClient
   Session.setDefault("productType", "tops")
@@ -13,10 +17,6 @@ if Meteor.isClient
     {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
     {"active": "", "productType": "tees", "displayName": "Tees"}
   ])
-  AGGREGATES =
-    sweaters: { '1': 3400, '2': 5900, '3': 7900 }
-    tees: { '1': 1500, '2': 1500, '3': 2000 }
-    tops: { '1': 2400, '2': 3900, '3': 5000 }
 
   Meteor.Router.add
     "/products/:id": (id) ->
@@ -80,11 +80,12 @@ if Meteor.isClient
 
     if ranges.length > 0
       if ranges.length < 4
+        aggregates = AGGREGATES[ptype]
         priceRangeQuery = _.map ranges, (range) ->
-          lower = if range > 1 then AGGREGATES[range-1] else 0
+          lower = if range > 1 then aggregates[range-1] else 0
           query = {"$gte": lower}
           if range < 4
-            query["$lt"] = AGGREGATES[range]
+            query["$lt"] = aggregates[range]
           { productPrice: query }
         findGroup["$or"] = priceRangeQuery
 
