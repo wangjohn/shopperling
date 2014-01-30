@@ -27,7 +27,7 @@ if Meteor.isClient
       Session.set("productType", category)
       "products"
     "*": ->
-      "products"
+      "landing_page"
 
   createRows = (allProducts, numCols) ->
     rows = []
@@ -61,6 +61,10 @@ if Meteor.isClient
 
   Template.banner_categories.categories = ->
     Session.get("productCategories")
+
+  Template.banner.events
+    "click .title-span": (e) ->
+      window.location.href = "/"
 
   Template.single_product.product = ->
     Session.get("currentProduct")
