@@ -4,7 +4,7 @@ NUM_COLS = 4
 
 if Meteor.isClient
   Session.setDefault("productType", "tops")
-  Session.setDefault("productsSortOrder", {numClicks: -1, productPrice: 1, $natural: -1})
+  Session.setDefault("productsSortOrder", [["numClicks", "desc"], "productPrice", "$natural"])
   Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
   Session.setDefault("productPriceRanges", [1,2,3,4])
   Session.setDefault("queryLimit", 20)
@@ -13,7 +13,7 @@ if Meteor.isClient
     {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
     {"active": "", "productType": "tees", "displayName": "Tees"}
   ])
-  Session.setDefault "aggregates",
+  AGGREGATES =
     sweaters: { '1': 3400, '2': 5900, '3': 7900 }
     tees: { '1': 1500, '2': 1500, '3': 2000 }
     tops: { '1': 2400, '2': 3900, '3': 5000 }
@@ -67,7 +67,6 @@ if Meteor.isClient
 
   Template.products.rows = ->
     ptype = Session.get("productType")
-    aggregates = Session.get("aggregates")[ptype]
     ranges = Session.get("productPriceRanges")
 
     findGroup =
@@ -78,10 +77,10 @@ if Meteor.isClient
     if ranges.length > 0
       if ranges.length < 4
         priceRangeQuery = _.map ranges, (range) ->
-          lower = if range > 1 then aggregates[range-1] else 0
+          lower = if range > 1 then AGGREGATES[range-1] else 0
           query = {"$gte": lower}
           if range < 4
-            query["$lt"] = aggregates[range]
+            query["$lt"] = AGGREGATES[range]
           { productPrice: query }
         findGroup["$or"] = priceRangeQuery
 
@@ -147,13 +146,13 @@ if Meteor.isClient
 
   Template.sort_by_dropdown.events
     "click .most-popular": (e) ->
-      Session.set("productsSortOrder", {numClicks: -1, productPrice: 1, $natural: -1})
+      Session.set("productsSortOrder", [["numClicks", "desc"], "productPrice", "$natural"])
       changeActiveStatus(e, "ul.dropdown-menu", "li")
     "click .price-lowest-first": (e) ->
-      Session.set("productsSortOrder", {productPrice: 1, $natural: -1})
+      Session.set("productsSortOrder", ["productPrice", "$natural"])
       changeActiveStatus(e, "ul.dropdown-menu", "li")
     "click .price-highest-first": (e) ->
-      Session.set("productsSortOrder", {productPrice: -1, $natural: -1})
+      Session.set("productsSortOrder", [["productPrice", "desc"], "$natural"])
       changeActiveStatus(e, "ul.dropdown-menu", "li")
 
   Template.filter_dropdown.events
@@ -188,8 +187,8 @@ if Meteor.isServer
       product.numClicks = 0
       Products.insert(product)
 
-  Meteor.startup ->
-    Products.remove({})
-    insertResults("data/all_products.json")
+  #Meteor.startup ->
+  #  Products.remove({})
+  #  insertResults("data/all_products.json")
 
 
