@@ -126,7 +126,8 @@ if Meteor.isClient
     setInterval ->
       if didScroll
         didScroll = false
-        if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-500))
+        if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-300))
+          console.log("Changing query limit")
           Session.set("queryLimit", Session.get("queryLimit") + 20)
     , 200
 
