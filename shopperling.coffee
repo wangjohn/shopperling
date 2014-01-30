@@ -7,13 +7,13 @@ AGGREGATES =
   tops: { '1': 2400, '2': 3900, '3': 5000 }
 
 if Meteor.isClient
-  Session.setDefault("productType", "tops")
+  Session.setDefault("productType", "")
   Session.setDefault("productsSortOrder", [["numClicks", "desc"], "productPrice", "$natural"])
   Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
   Session.setDefault("productPriceRanges", [1,2,3,4])
   Session.setDefault("queryLimit", 20)
   Session.setDefault("productCategories", [
-    {"active": "active", "productType": "tops", "displayName": "Tops"},
+    {"active": "", "productType": "tops", "displayName": "Tops"},
     {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
     {"active": "", "productType": "tees", "displayName": "Tees"}
   ])
