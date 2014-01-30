@@ -17,6 +17,7 @@ if Meteor.isClient
     {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
     {"active": "", "productType": "tees", "displayName": "Tees"}
   ])
+  Session.setDefault("loadComments", false)
 
   Meteor.Router.add
     "/products/:id": (id) ->
@@ -59,6 +60,17 @@ if Meteor.isClient
 
     Session.set("productCategories", newCategories)
 
+  Deps.autorun ->
+    if Session.get("loadComments") && !window.DISQUS
+      disqus_shortname = "dressly"
+      (->
+        dsq = document.createElement("script")
+        dsq.type = "text/javascript"
+        dsq.async = true
+        dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js"
+        (document.getElementsByTagName("head")[0] or document.getElementsByTagName("body")[0]).appendChild dsq
+      )()
+
   Template.banner_categories.categories = ->
     Session.get("productCategories")
 
@@ -97,6 +109,12 @@ if Meteor.isClient
       createRows(allProducts, NUM_COLS)
     else
       []
+
+  Template.comments.rendered = ->
+    Session.set("loadComments", true)
+    DISQUS?.reset
+      reload: true
+      config: ->
 
   Template.products.created = ->
     didScroll = false
