@@ -149,7 +149,6 @@ if Meteor.isClient
         billingAddress: true
         token: (res) ->
           Payments.insert(res)
-        closed: ->
           window.location.href = "/"
 
   Template.products.events
