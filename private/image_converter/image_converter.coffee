@@ -7,8 +7,7 @@ async = require("async")
 
 dataDirectory = path.resolve(path.join(__dirname, "../data/"))
 imageDirectory = path.resolve(path.join(__dirname, "../../public/images"))
-#dataFiles = fs.readdirSync(dataDirectory)
-dataFiles = ["banana_republic.json", "hm.json"]
+dataFiles = fs.readdirSync(dataDirectory)
 
 generatePngNameStub = ->
   crypto.randomBytes(4).readUInt32LE(0) + ".png"
@@ -28,9 +27,9 @@ download = (path, tempFilename, finalFilename, cb) ->
 
 resizeImage = (tempFilename, finalFilename, cb) ->
   gm(tempFilename)
-    .resize(300, 300)
+    .resize(2000, 2000)
     .gravity("Center")
-    .extent(200, 200)
+    .extent(1900, 1900)
     .stream "png", (err, stdout, stderr) ->
       writeStream = fs.createWriteStream(finalFilename)
       stdout.pipe(writeStream)
