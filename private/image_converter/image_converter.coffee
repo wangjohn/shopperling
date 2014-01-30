@@ -27,9 +27,9 @@ download = (path, tempFilename, finalFilename, cb) ->
 
 resizeImage = (tempFilename, finalFilename, cb) ->
   gm(tempFilename)
-    .resize(2000, 2000)
+    .resize(500, 500)
     .gravity("Center")
-    .extent(1900, 1900)
+    .extent(400, 400)
     .stream "png", (err, stdout, stderr) ->
       writeStream = fs.createWriteStream(finalFilename)
       stdout.pipe(writeStream)
@@ -61,11 +61,12 @@ convertProduct = (products, newProducts) ->
     )
   else
     filename = path.join(dataDirectory, "all_products.json")
-    previousProducts = JSON.parse(fs.readFileSync(filename))
-    allProducts = previousProducts.concat(newProducts)
+    if fs.existsSync(filename)
+      previousProducts = JSON.parse(fs.readFileSync(filename))
+      allProducts = previousProducts.concat(newProducts)
+    else
+      allProducts = newProducts
     productsToWrite = JSON.stringify(allProducts)
-    console.log(previousProducts.length)
-    console.log(newProducts.length)
     console.log(allProducts.length)
     console.log("WRITING TO: " + filename)
     fs.writeFileSync(filename, productsToWrite)
