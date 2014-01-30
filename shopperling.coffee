@@ -140,7 +140,7 @@ if Meteor.isClient
       description = target.attr("data-product-description")
       image = target.attr("data-product-image")
       StripeCheckout.open
-        key: "pk_test_Yn2GuE76kN6CdrkIYGfFSunq"
+        key: "pk_live_V6R4efzM6kAcrgwq8rDti1Qs"
         amount: price
         name: productName
         image: image
