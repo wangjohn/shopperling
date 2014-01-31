@@ -5,7 +5,7 @@ AGGREGATES =
   sweaters: { '1': 3400, '2': 5900, '3': 7900 }
   tees: { '1': 1500, '2': 1500, '3': 2000 }
   tops: { '1': 2400, '2': 3900, '3': 5000 }
-IMAGE_BASE_URL = "https://dl.dropboxusercontent.com/spa/pjlfdak1tmznswp/powered_by.js/public/"
+IMAGE_BASE_URL = "https://dl.dropboxusercontent.com/spa/lo1br4efvfb305a/dressly/public/"
 
 if Meteor.isClient
   Session.setDefault("productType", "")
