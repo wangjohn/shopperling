@@ -1,23 +1,25 @@
 <template name="products">
-  <div class="products">
-    {{#each rows}}
-      <div class="row">
-        <div class="col-sm-12">
-          {{#each columns}}
-            <div class="col-sm-3 col-xs-6 product">
-              <div class="thumbnail">
-                <a href="/products/{{ _id }}" class="product-link" data-target="{{ _id }}">
-                  <img class="product-image img-responsive" src="{{ getStoredImageUrl storageImageFilename }}"></img>
-                </a>
-                <div class="product-information caption">
-                  <div class="name">{{ lowerCase productName }}</div>
-                  <div class="price">{{ displayPrice productPrice }}</div>
+  {{#isolate}}
+    <div class="products">
+      {{#each rows}}
+        <div class="row">
+          <div class="col-sm-12">
+            {{#each columns}}
+              <div class="col-sm-3 col-xs-6 product">
+                <div class="thumbnail">
+                  <a href="/products/{{ _id }}" class="product-link" data-target="{{ _id }}">
+                    <img class="product-image img-responsive" src="{{ getStoredImageUrl storageImageFilename }}"></img>
+                  </a>
+                  <div class="product-information caption">
+                    <div class="name">{{ lowerCase productName }}</div>
+                    <div class="price">{{ displayPrice productPrice }}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          {{/each}}
+            {{/each}}
+          </div>
         </div>
-      </div>
-    {{/each}}
-  </div>
+      {{/each}}
+    </div>
+  {{/isolate}}
 </template>

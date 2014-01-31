@@ -1,6 +1,7 @@
 Products = new Meteor.Collection("products")
 Payments = new Meteor.Collection("payments")
 NUM_COLS = 4
+QUERY_LIMIT_BLOCK_SIZE = 12
 AGGREGATES =
   sweaters: { '1': 3400, '2': 5900, '3': 7900 }
   tees: { '1': 1500, '2': 1500, '3': 2000 }
@@ -12,7 +13,7 @@ if Meteor.isClient
   Session.setDefault("productsSortOrder", [["numClicks", "desc"], "productPrice", "$natural"])
   Session.setDefault("productBrands", ["Banana Republic", "Calvin Klein", "Everlane", "Express", "H&M", "Neiman Marcus"])
   Session.setDefault("productPriceRanges", [1,2,3,4])
-  Session.setDefault("queryLimit", 20)
+  Session.setDefault("queryLimit", QUERY_LIMIT_BLOCK_SIZE)
   Session.setDefault("productCategories", [
     {"productType": "tops", "displayName": "Tops"},
     {"productType": "sweaters", "displayName": "Sweaters"},
@@ -50,6 +51,9 @@ if Meteor.isClient
     $(e.currentTarget).closest(majorContainer).find(".active").removeClass("active")
     $(e.currentTarget).closest(minorContainer).addClass("active")
 
+  activeProductClass = (productType) ->
+    if productType == Session.get("productType") then "active" else ""
+
   getStoredImageUrl = (fileStub) ->
     IMAGE_BASE_URL + fileStub
 
@@ -65,14 +69,13 @@ if Meteor.isClient
       )()
 
   Template.banner_categories.categories = ->
-    Session.get("productCategories")
-
-  Template.banner_categories.helpers =
-    "getActive": (productType) ->
-      if productType == Session.get("productType")
-        "active"
-      else
-        ""
+    categories = []
+    _.each Session.get("productCategories"), (category) ->
+      categories.push
+        productType: category.productType
+        displayName: category.displayName
+        active: activeProductClass(category.productType)
+    categories
 
   Template.banner.events
     "click .title-span": (e) ->
@@ -127,7 +130,7 @@ if Meteor.isClient
       if didScroll
         didScroll = false
         if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-300))
-          Session.set("queryLimit", Session.get("queryLimit") + 20)
+          Session.set("queryLimit", Session.get("queryLimit") + QUERY_LIMIT_BLOCK_SIZE)
     , 200
 
   Template.purchase_button.events
@@ -217,13 +220,10 @@ if Meteor.isClient
 
   Template.banner_categories.events
     "click .categories.tees": (e) ->
-      console.log("category event")
       Session.set("productType", "tees")
     "click .categories.sweaters": (e) ->
-      console.log("category event")
       Session.set("productType", "sweaters")
     "click .categories.tops": (e) ->
-      console.log("category event")
       Session.set("productType", "tops")
 
 if Meteor.isServer
