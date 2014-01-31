@@ -1,6 +1,6 @@
 <template name="banner_categories">
   {{#each categories}}
-    <li class="{{ active }}">
+    <li class="{{ getActive productType }}">
       <a class="categories {{ productType }}" href="/{{ productType }}">
         {{ displayName }}
       </a>

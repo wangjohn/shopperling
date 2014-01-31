@@ -14,9 +14,9 @@ if Meteor.isClient
   Session.setDefault("productPriceRanges", [1,2,3,4])
   Session.setDefault("queryLimit", 20)
   Session.setDefault("productCategories", [
-    {"active": "", "productType": "tops", "displayName": "Tops"},
-    {"active": "", "productType": "sweaters", "displayName": "Sweaters"},
-    {"active": "", "productType": "tees", "displayName": "Tees"}
+    {"productType": "tops", "displayName": "Tops"},
+    {"productType": "sweaters", "displayName": "Sweaters"},
+    {"productType": "tees", "displayName": "Tees"}
   ])
   Session.setDefault("loadComments", false)
 
@@ -46,23 +46,12 @@ if Meteor.isClient
     rows
 
   changeActiveStatus = (e, majorContainer, minorContainer) ->
+    console.log("changing active status")
     $(e.currentTarget).closest(majorContainer).find(".active").removeClass("active")
     $(e.currentTarget).closest(minorContainer).addClass("active")
 
   getStoredImageUrl = (fileStub) ->
     IMAGE_BASE_URL + fileStub
-
-  Deps.autorun ->
-    productType = Session.get("productType")
-    Session.set("queryLimit", 20)
-    newCategories = _.map Session.get("productCategories"), (category) ->
-      if category.productType == productType
-        category.active = "active"
-      else
-        category.active = ""
-      category
-
-    Session.set("productCategories", newCategories)
 
   Deps.autorun ->
     if Session.get("loadComments") && !window.DISQUS
@@ -77,6 +66,13 @@ if Meteor.isClient
 
   Template.banner_categories.categories = ->
     Session.get("productCategories")
+
+  Template.banner_categories.helpers =
+    "getActive": (productType) ->
+      if productType == Session.get("productType")
+        "active"
+      else
+        ""
 
   Template.banner.events
     "click .title-span": (e) ->
@@ -131,7 +127,6 @@ if Meteor.isClient
       if didScroll
         didScroll = false
         if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-300))
-          console.log("Changing query limit")
           Session.set("queryLimit", Session.get("queryLimit") + 20)
     , 200
 
@@ -205,12 +200,14 @@ if Meteor.isClient
     "click .filter-dropdown": (e) ->
       e.stopPropagation()
     "click input.brand-checkbox": (e) ->
+      console.log("changing brands")
       brands = []
       $("input.brand-checkbox").each (index, element) ->
         if $(element).prop("checked")
           brands.push($(element).attr("name"))
       Session.set("productBrands", brands)
     "click input.price-checkbox": (e) ->
+      console.log("changing prices")
       ranges = []
       $("input.price-checkbox").each (index, element) ->
         if $(element).prop("checked")
@@ -220,10 +217,13 @@ if Meteor.isClient
 
   Template.banner_categories.events
     "click .categories.tees": (e) ->
+      console.log("category event")
       Session.set("productType", "tees")
     "click .categories.sweaters": (e) ->
+      console.log("category event")
       Session.set("productType", "sweaters")
     "click .categories.tops": (e) ->
+      console.log("category event")
       Session.set("productType", "tops")
 
 if Meteor.isServer
