@@ -172,7 +172,7 @@ if Meteor.isClient
   Template.google_analytics.rendered = ->
     if !window._gaq?
       window._gaq = []
-      _gaq.push(['_setAccount', 'UA-XXXXXXXX-N'])
+      _gaq.push(['_setAccount', 'UA-34139010-4'])
       _gaq.push(['_trackPageview'])
 
       (->
