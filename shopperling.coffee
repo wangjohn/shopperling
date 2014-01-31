@@ -5,6 +5,7 @@ AGGREGATES =
   sweaters: { '1': 3400, '2': 5900, '3': 7900 }
   tees: { '1': 1500, '2': 1500, '3': 2000 }
   tops: { '1': 2400, '2': 3900, '3': 5000 }
+IMAGE_BASE_URL = "https://dl.dropboxusercontent.com/spa/pjlfdak1tmznswp/powered_by.js/public/"
 
 if Meteor.isClient
   Session.setDefault("productType", "")
@@ -47,6 +48,9 @@ if Meteor.isClient
   changeActiveStatus = (e, majorContainer, minorContainer) ->
     $(e.currentTarget).closest(majorContainer).find(".active").removeClass("active")
     $(e.currentTarget).closest(minorContainer).addClass("active")
+
+  getStoredImageUrl = (fileStub) ->
+    IMAGE_BASE_URL + fileStub
 
   Deps.autorun ->
     productType = Session.get("productType")
@@ -162,10 +166,14 @@ if Meteor.isClient
       "$" + (number / 100).toFixed(0).toString()
     "lowerCase": (string) ->
       string.toLowerCase()
+    "getStoredImageUrl": (fileStub) ->
+      getStoredImageUrl(fileStub)
 
   Template.single_product.helpers
     "displayPrice": (number) ->
       "$" + (number / 100).toFixed(2).toString()
+    "getStoredImageUrl": (fileStub) ->
+      getStoredImageUrl(fileStub)
 
   Template.sort_by_dropdown.events
     "click .most-popular": (e) ->
@@ -210,8 +218,8 @@ if Meteor.isServer
       product.numClicks = 0
       Products.insert(product)
 
-  #Meteor.startup ->
-  #  Products.remove({})
-  #  insertResults("data/all_products.json")
+  Meteor.startup ->
+    Products.remove({})
+    insertResults("data/all_products.json")
 
 

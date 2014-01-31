@@ -27,9 +27,9 @@ download = (path, tempFilename, finalFilename, cb) ->
 
 resizeImage = (tempFilename, finalFilename, cb) ->
   gm(tempFilename)
-    .resize(500, 500)
+    .resize(2000, 2000)
     .gravity("Center")
-    .extent(400, 400)
+    .extent(1700, 1700)
     .stream "png", (err, stdout, stderr) ->
       writeStream = fs.createWriteStream(finalFilename)
       stdout.pipe(writeStream)
