@@ -134,6 +134,10 @@ if Meteor.isClient
           Session.set("queryLimit", Session.get("queryLimit") + QUERY_LIMIT_BLOCK_SIZE)
     , 200
 
+  Template.products.rendered = ->
+    $("img.product-image").lazyload
+      effect: "fadeIn"
+
   Template.purchase_button.events
     "click .purchase": (e) ->
       e.preventDefault()
