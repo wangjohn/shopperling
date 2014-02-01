@@ -15,6 +15,7 @@ if Meteor.isClient
   Session.setDefault("productPriceRanges", [1,2,3,4])
   Session.setDefault("queryLimit", QUERY_LIMIT_BLOCK_SIZE)
   Session.setDefault("productCategories", [
+    {"productType": "sales", "displayName": "Sales"},
     {"productType": "tops", "displayName": "Tops"},
     {"productType": "sweaters", "displayName": "Sweaters"},
     {"productType": "tees", "displayName": "Tees"}
@@ -166,6 +167,10 @@ if Meteor.isClient
       string.toLowerCase()
     "getStoredImageUrl": (fileStub) ->
       getStoredImageUrl(fileStub)
+    "productType": ->
+      Session.get("productType")
+    "showSaleBanner": ->
+      Session.get("productType") == "sales"
 
   Template.google_analytics.rendered = ->
     if !window._gaq?

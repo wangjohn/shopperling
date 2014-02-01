@@ -1,6 +1,9 @@
 <template name="products">
   {{#isolate}}
-    <div class="products">
+    {{#if showSaleBanner}}
+      {{> sale_banner }}
+    {{/if}}
+    <div class="products {{ productType }}">
       {{#each rows}}
         <div class="row">
           <div class="col-sm-12">
@@ -22,4 +25,13 @@
       {{/each}}
     </div>
   {{/isolate}}
+</template>
+
+<template name="sale_banner">
+  <div class="sale-banner panel panel-default">
+    <div class="panel-heading">THE LOWEST PRICES</div>
+    <div class="panel-body">
+      We've scoured the internet for sales and promotions to get you the best prices -- here they are.
+    </div>
+  </div>
 </template>
