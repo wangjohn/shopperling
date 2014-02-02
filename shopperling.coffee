@@ -15,7 +15,7 @@ if Meteor.isClient
   Session.setDefault("productPriceRanges", [1,2,3,4])
   Session.setDefault("queryLimit", QUERY_LIMIT_BLOCK_SIZE)
   Session.setDefault("productCategories", [
-    {"productType": "sales", "displayName": "Sales"},
+    {"productType": "sales", "displayName": "SALES"},
     {"productType": "tops", "displayName": "Tops"},
     {"productType": "sweaters", "displayName": "Sweaters"},
     {"productType": "tees", "displayName": "Tees"}
