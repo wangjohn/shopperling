@@ -172,6 +172,10 @@ if Meteor.isClient
     "showSaleBanner": ->
       Session.get("productType") == "sales"
 
+  Template.purchase_button.helpers
+    "getStoredImageUrl": (fileStub) ->
+      getStoredImageUrl(fileStub)
+
   Template.google_analytics.rendered = ->
     if !window._gaq?
       window._gaq = []

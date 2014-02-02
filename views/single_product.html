@@ -28,7 +28,7 @@
       href="{{ product.productUrl }}" target="_blank"
       data-product-name="{{ productName}}"
       data-product-price="{{ productPrice }}"
-      data-product-image="/images/{{ storageImageFilename }}"
+      data-product-image="{{ getStoredImageUrl storageImageFilename }}"
       data-product-description="{{ productBrand }}">
     Purchase
   </a>
