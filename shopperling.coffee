@@ -1,7 +1,7 @@
 Products = new Meteor.Collection("products")
 Payments = new Meteor.Collection("payments")
 NUM_COLS = 4
-QUERY_LIMIT_BLOCK_SIZE = 12
+QUERY_LIMIT_BLOCK_SIZE = 16
 AGGREGATES =
   sweaters: { '1': 3400, '2': 5900, '3': 7900 }
   tees: { '1': 1500, '2': 1500, '3': 2000 }
@@ -130,7 +130,7 @@ if Meteor.isClient
     setInterval ->
       if didScroll
         didScroll = false
-        if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-300))
+        if ($win.height() + $win.scrollTop() > ($(document).outerHeight()-400))
           Session.set("queryLimit", Session.get("queryLimit") + QUERY_LIMIT_BLOCK_SIZE)
     , 200
 
